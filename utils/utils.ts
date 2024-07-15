@@ -1,5 +1,7 @@
 import * as FileSystem from "expo-file-system";
 
+export type SQLBatchTuple = [string] | [string, Array<any> | Array<Array<any>>];
+
 export function randomIntFromInterval(min: number, max: number) {
   // min included and max excluded
   return Math.random() * (max - min) + min;
