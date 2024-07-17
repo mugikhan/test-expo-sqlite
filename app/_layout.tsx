@@ -95,13 +95,15 @@ export default function RootLayout() {
     db: SQLiteDatabase,
     commands: SQLBatchTuple[]
   ): Promise<void> {
-    const statement = await db.prepareAsync(commands[0][0]);
-    for (const tuple of commands) {
-      const params = tuple[1];
-      await statement.executeAsync(params as any[]);
-    }
-    await statement.finalizeAsync();
-    return;
+    await db.withTransactionAsync(async () => {
+      const statement = await db.prepareAsync(commands[0][0]);
+      for (const tuple of commands) {
+        const params = tuple[1];
+        await statement.executeAsync(params as any[]);
+      }
+      await statement.finalizeAsync();
+      return;
+    });
   }
 
   async function record(name: string, callback: () => Promise<void>) {
